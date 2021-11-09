@@ -1,4 +1,4 @@
-@db
+@db @us1 @mousa
 Feature: As a data consumer, I want the user information to be stored in mySql DB
   correctly in users table.
 
