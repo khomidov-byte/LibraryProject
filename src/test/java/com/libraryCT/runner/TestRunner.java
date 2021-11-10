@@ -14,7 +14,11 @@ import org.junit.runner.RunWith;
         } ,
         dryRun = false
 
-        , tags = "@danka and @db"
+
+       
+
+=======
+        , tags = "@db" 
 
 )
 public class TestRunner {
