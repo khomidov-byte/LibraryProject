@@ -29,7 +29,7 @@ public class Hooks {
 
     }
 
-    @After("@bd")
+    @After("@db")
     public void destroyDatabase(){
         DB_Util.destroy();
     }
