@@ -9,26 +9,27 @@ import java.util.Map;
 public class DB_Util {
 
     // declaring at class level so all methods can access
-    private static Connection con ;
-    private static Statement stm ;
-    private static ResultSet rs ;
-    private static ResultSetMetaData rsmd ;
+    private static Connection con;
+    private static Statement stm;
+    private static ResultSet rs;
+    private static ResultSetMetaData rsmd;
 
 
     /**
      * Create Connection by jdbc url and username , password provided
-     * @param url  jdbc url for any database
+     *
+     * @param url      jdbc url for any database
      * @param username username for database
      * @param password password for database
      */
-    public static void createConnection(String url , String username, String password){
+    public static void createConnection(String url, String username, String password) {
 
 
         try {
-            con = DriverManager.getConnection(url, username, password) ;
+            con = DriverManager.getConnection(url, username, password);
             System.out.println("CONNECTION SUCCESSFUL");
         } catch (Exception e) {
-            System.out.println("CONNECTION HAS FAILED " + e.getMessage() );
+            System.out.println("CONNECTION HAS FAILED " + e.getMessage());
         }
 
     }
@@ -37,16 +38,16 @@ public class DB_Util {
     /**
      * Create connection method , just checking one connection successful or not
      */
-    public static void createConnection(){
+    public static void createConnection() {
 
-        String url      = ConfigReader.read("library2.database.url") ;
-        String username = ConfigReader.read("library2.database.username") ;
-        String password = ConfigReader.read("library2.database.password") ;
+        String url = ConfigReader.read("library2.database.url");
+        String username = ConfigReader.read("library2.database.username");
+        String password = ConfigReader.read("library2.database.password");
         try {
-           con = DriverManager.getConnection(url , username, password) ;
-           System.out.println("CONNECTION SUCCESSFUL");
-    } catch (Exception e) {
-            System.out.println("CONNECTION HAS FAILED " + e.getMessage() );
+            con = DriverManager.getConnection(url, username, password);
+            System.out.println("CONNECTION SUCCESSFUL");
+        } catch (Exception e) {
+            System.out.println("CONNECTION HAS FAILED " + e.getMessage());
         }
         createConnection(url, username, password);
 
@@ -55,35 +56,36 @@ public class DB_Util {
 
     /**
      * Run the sql query provided and return ResultSet object
+     *
      * @param sql the query to run
      * @return ResultSet object  that contains data
      */
-    public static ResultSet runQuery(String sql){
+    public static ResultSet runQuery(String sql) {
 
         try {
             stm = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stm.executeQuery(sql); // setting the value of ResultSet object
-            rsmd = rs.getMetaData() ;  // setting the value of ResultSetMetaData for reuse
-        }catch(Exception e){
-            System.out.println("ERROR OCCURRED WHILE RUNNING QUERY "+ e.getMessage() );
+            rsmd = rs.getMetaData();  // setting the value of ResultSetMetaData for reuse
+        } catch (Exception e) {
+            System.out.println("ERROR OCCURRED WHILE RUNNING QUERY " + e.getMessage());
         }
 
-        return rs ;
+        return rs;
 
     }
 
     /**
      * destroy method to clean up all the resources after being used
      */
-    public static void destroy(){
+    public static void destroy() {
         // WE HAVE TO CHECK IF WE HAVE THE VALID OBJECT FIRST BEFORE CLOSING THE RESOURCE
         // BECAUSE WE CAN NOT TAKE ACTION ON AN OBJECT THAT DOES NOT EXIST
         try {
-            if( rs!=null)  rs.close();
-            if( stm!=null)  stm.close();
-            if( con!=null)  con.close();
+            if (rs != null) rs.close();
+            if (stm != null) stm.close();
+            if (con != null) con.close();
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE CLOSING RESOURCES " + e.getMessage() );
+            System.out.println("ERROR OCCURRED WHILE CLOSING RESOURCES " + e.getMessage());
         }
 
     }
@@ -91,7 +93,7 @@ public class DB_Util {
     /**
      * This method will reset the cursor to before first location
      */
-    private static void resetCursor(){
+    private static void resetCursor() {
 
         try {
             rs.beforeFirst();
@@ -105,64 +107,66 @@ public class DB_Util {
 
     /**
      * find out the row count
+     *
      * @return row count of this ResultSet
      */
-    public static int getRowCount(){
+    public static int getRowCount() {
 
-        int rowCount = 0 ;
+        int rowCount = 0;
         try {
-            rs.last() ;
-            rowCount = rs.getRow() ;
+            rs.last();
+            rowCount = rs.getRow();
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE GETTING ROW COUNT " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE GETTING ROW COUNT " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
-        return rowCount ;
+        return rowCount;
 
     }
 
 
     /**
      * find out the column count
+     *
      * @return column count of this ResultSet
      */
-    public static int getColumnCount(){
+    public static int getColumnCount() {
 
-        int columnCount = 0 ;
+        int columnCount = 0;
 
         try {
             columnCount = rsmd.getColumnCount();
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE GETTING COLUMN COUNT " + e.getMessage() );
+            System.out.println("ERROR OCCURRED WHILE GETTING COLUMN COUNT " + e.getMessage());
         }
 
-        return columnCount ;
+        return columnCount;
 
     }
 
 
-
     /**
      * // Get all the Column names into a list object
-     * @return  List<String>
+     *
+     * @return List<String>
      */
-    public static List<String> getAllColumnNamesAsList(){
+    public static List<String> getAllColumnNamesAsList() {
 
         List<String> columnNameLst = new ArrayList<>();
 
         try {
-            for (int colIndex = 1; colIndex <= getColumnCount() ; colIndex++) {
-                String columnName =  rsmd.getColumnName(colIndex) ;
-                columnNameLst.add(columnName) ;
+            for (int colIndex = 1; colIndex <= getColumnCount(); colIndex++) {
+                String columnName = rsmd.getColumnName(colIndex);
+                columnNameLst.add(columnName);
             }
-        }catch (Exception e){
-            System.out.println("ERROR OCCURRED WHILE getAllColumnNamesAsList "+ e.getMessage());
+        } catch (Exception e) {
+            System.out.println("ERROR OCCURRED WHILE getAllColumnNamesAsList " + e.getMessage());
         }
 
-        return columnNameLst ;
+        return columnNameLst;
 
     }
 
@@ -170,80 +174,82 @@ public class DB_Util {
 
     /**
      * Getting entire row of data in a List of String
+     *
      * @param rowNum row number to get as a list
      * @return row data as List of String
      */
-    public static List<String> getRowDataAsList( int rowNum ){
+    public static List<String> getRowDataAsList(int rowNum) {
 
         List<String> rowDataAsLst = new ArrayList<>();
-        int colCount =  getColumnCount() ;
+        int colCount = getColumnCount();
 
         try {
-            rs.absolute( rowNum );
+            rs.absolute(rowNum);
 
-            for (int colIndex = 1; colIndex <= colCount ; colIndex++) {
+            for (int colIndex = 1; colIndex <= colCount; colIndex++) {
 
-                String cellValue =  rs.getString( colIndex ) ;
-                rowDataAsLst.add(   cellValue  ) ;
+                String cellValue = rs.getString(colIndex);
+                rowDataAsLst.add(cellValue);
 
             }
 
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE getRowDataAsList " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE getRowDataAsList " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
 
-        return rowDataAsLst ;
+        return rowDataAsLst;
     }
-
 
 
     /**
      * getting the cell value according to row num and column index
-     * @param rowNum  row number to get the data from
+     *
+     * @param rowNum      row number to get the data from
      * @param columnIndex column number to get the data from
      * @return the value in String at that location
      */
-    public static String getCellValue(int rowNum , int columnIndex) {
+    public static String getCellValue(int rowNum, int columnIndex) {
 
-        String cellValue = "" ;
+        String cellValue = "";
 
         try {
-            rs.absolute(rowNum) ;
-            cellValue = rs.getString(columnIndex ) ;
+            rs.absolute(rowNum);
+            cellValue = rs.getString(columnIndex);
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE getCellValue " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE getCellValue " + e.getMessage());
+        } finally {
             resetCursor();
         }
-        return cellValue ;
+        return cellValue;
 
     }
 
     /**
      * getting the cell value according to row num and column name
-     * @param rowNum  row number to get the data from
+     *
+     * @param rowNum     row number to get the data from
      * @param columnName column Name to get the data from
      * @return the value in String at that location
      */
-    public static String getCellValue(int rowNum ,String columnName){
+    public static String getCellValue(int rowNum, String columnName) {
 
-        String cellValue = "" ;
+        String cellValue = "";
 
         try {
-            rs.absolute(rowNum) ;
-            cellValue = rs.getString( columnName ) ;
+            rs.absolute(rowNum);
+            cellValue = rs.getString(columnName);
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE getCellValue " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE getCellValue " + e.getMessage());
+        } finally {
             resetCursor();
         }
-        return cellValue ;
+        return cellValue;
 
     }
 
@@ -251,9 +257,9 @@ public class DB_Util {
     /**
      * Get First Cell Value at First row First Column
      */
-    public static String getFirstRowFirstColumn(){
+    public static String getFirstRowFirstColumn() {
 
-        return getCellValue(1,1) ;
+        return getCellValue(1, 1);
 
     }
 
@@ -261,57 +267,59 @@ public class DB_Util {
 
     /**
      * getting entire column data as list according to column number
+     *
      * @param columnNum column number to get all data
      * @return List object that contains all rows of that column
      */
-    public static List<String> getColumnDataAsList(int columnNum){
+    public static List<String> getColumnDataAsList(int columnNum) {
 
         List<String> columnDataLst = new ArrayList<>();
 
         try {
             rs.beforeFirst(); // make sure the cursor is at before first location
-            while( rs.next() ){
+            while (rs.next()) {
 
-                String cellValue = rs.getString(columnNum) ;
-                columnDataLst.add(cellValue) ;
+                String cellValue = rs.getString(columnNum);
+                columnDataLst.add(cellValue);
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
 
-        return columnDataLst ;
+        return columnDataLst;
 
     }
 
     /**
      * getting entire column data as list according to column Name
+     *
      * @param columnName column name to get all data
      * @return List object that contains all rows of that column
      */
-    public static List<String> getColumnDataAsList(String columnName){
+    public static List<String> getColumnDataAsList(String columnName) {
 
         List<String> columnDataLst = new ArrayList<>();
 
         try {
             rs.beforeFirst(); // make sure the cursor is at before first location
-            while( rs.next() ){
+            while (rs.next()) {
 
-                String cellValue = rs.getString(columnName) ;
-                columnDataLst.add(cellValue) ;
+                String cellValue = rs.getString(columnName);
+                columnDataLst.add(cellValue);
             }
 
         } catch (Exception e) {
-            System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage() );
-        }finally {
+            System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
 
-        return columnDataLst ;
+        return columnDataLst;
 
     }
 
@@ -319,13 +327,17 @@ public class DB_Util {
     /**
      * display all data from the ResultSet Object
      */
-    public static void  displayAllData(){
+    public static void displayAllData() {
 
-        int columnCount = getColumnCount() ;
+        int columnCount = getColumnCount();
+        for (String columnName : getAllColumnNamesAsList()) {
+            System.out.printf("%-25s", columnName);
+        }
+        System.out.println();
         resetCursor();
-        try{
+        try {
 
-            while(rs.next()){
+            while (rs.next()) {
 
                 for (int colIndex = 1; colIndex <= columnCount; colIndex++) {
 
@@ -336,9 +348,9 @@ public class DB_Util {
 
             }
 
-        }catch(Exception e){
-            System.out.println("ERROR OCCURRED WHILE displayAllData " + e.getMessage() );
-        }finally {
+        } catch (Exception e) {
+            System.out.println("ERROR OCCURRED WHILE displayAllData " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
@@ -346,56 +358,59 @@ public class DB_Util {
 
     /**
      * Save entire row data as Map<String,String>
+     *
      * @param rowNum row number
      * @return Map object that contains key value pair
-     *      key     : column name
-     *      value   : cell value
+     * key     : column name
+     * value   : cell value
      */
-    public static Map<String,String> getRowMap(int rowNum){
+    public static Map<String, String> getRowMap(int rowNum) {
 
-        Map<String,String> rowMap = new LinkedHashMap<>();
-        int columnCount = getColumnCount() ;
+        Map<String, String> rowMap = new LinkedHashMap<>();
+        int columnCount = getColumnCount();
 
-        try{
+        try {
 
-            rs.absolute(rowNum) ;
+            rs.absolute(rowNum);
 
-            for (int colIndex = 1; colIndex <= columnCount ; colIndex++) {
-                String columnName = rsmd.getColumnName(colIndex) ;
-                String cellValue  = rs.getString(colIndex) ;
-                rowMap.put(columnName, cellValue) ;
+            for (int colIndex = 1; colIndex <= columnCount; colIndex++) {
+                String columnName = rsmd.getColumnName(colIndex);
+                String cellValue = rs.getString(colIndex);
+                rowMap.put(columnName, cellValue);
             }
 
-        }catch(Exception e){
-            System.out.println("ERROR OCCURRED WHILE getRowMap " + e.getMessage() );
-        }finally {
+        } catch (Exception e) {
+            System.out.println("ERROR OCCURRED WHILE getRowMap " + e.getMessage());
+        } finally {
             resetCursor();
         }
 
 
-        return rowMap ;
+        return rowMap;
     }
+
     /**
      * We know how to store one row as map object
      * Now Store All rows as List of Map object
+     *
      * @return List of Map object that contain each row data as Map<String,String>
      */
-    public static List<Map<String,String>> getAllRowAsListOfMap(){
+    public static List<Map<String, String>> getAllRowAsListOfMap() {
 
-        List<Map<String,String>> allRowLstOfMap = new ArrayList<>();
-        int rowCount = getRowCount() ;
+        List<Map<String, String>> allRowLstOfMap = new ArrayList<>();
+        int rowCount = getRowCount();
         // move from first row till last row
         // get each row as map object and add it to the list
 
-        for (int rowIndex = 1; rowIndex <= rowCount ; rowIndex++) {
+        for (int rowIndex = 1; rowIndex <= rowCount; rowIndex++) {
 
-            Map<String,String> rowMap = getRowMap(rowIndex);
-            allRowLstOfMap.add( rowMap ) ;
+            Map<String, String> rowMap = getRowMap(rowIndex);
+            allRowLstOfMap.add(rowMap);
 
         }
         resetCursor();
 
-        return allRowLstOfMap ;
+        return allRowLstOfMap;
 
     }
 
