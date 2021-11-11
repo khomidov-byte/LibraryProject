@@ -6,7 +6,7 @@ public class ShowBooks {
 
     public static void main(String[] args) {
         DB_Util.createConnection();
-        DB_Util.runQuery("SELECT * FROM users");
+        DB_Util.runQuery("SELECT * FROM book_categories");
         DB_Util.displayAllData();
     }
 }

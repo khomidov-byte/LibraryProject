@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
                 "me.jvt.cucumber.report.PrettyReports:target"  // fancy report
         } ,
         dryRun = false
-        , tags = "@db" 
+        , tags = "@db and @us3 and @mousa"
 
 )
 public class TestRunner {
