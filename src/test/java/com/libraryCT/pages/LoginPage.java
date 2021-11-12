@@ -22,7 +22,6 @@ public class LoginPage {
     }
 
     public void goTo(){
-//        Driver.getDriver().get("https://library2.cybertekschool.com/login.html");
         Driver.getDriver().get(ConfigReader.read( "library2.ui.url" ) );
     }
 
@@ -33,6 +32,15 @@ public class LoginPage {
         loginButton.click();
 
     }
+
+    public void librarianLogin(){
+        usernameBox.sendKeys(ConfigReader.read("library2.ui.librarian_user"));
+        passwordBox.sendKeys("library2.ui.password");
+        loginButton.click();
+
+    }
+
+
 
 
 }
